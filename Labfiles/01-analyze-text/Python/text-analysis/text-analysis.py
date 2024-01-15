@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
 import os
 
-# Import namespaces
-
+# import namespaces
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import TextAnalyticsClient
 
 def main():
     try:
@@ -12,7 +13,8 @@ def main():
         ai_key = os.getenv('AI_SERVICE_KEY')
 
         # Create client using endpoint and key
-
+        credential = AzureKeyCredential(ai_key)
+        ai_client = TextAnalyticsClient(endpoint=ai_endpoint, credential=credential)
 
         # Analyze each text file in the reviews folder
         reviews_folder = 'reviews'
@@ -23,7 +25,8 @@ def main():
             print('\n' + text)
 
             # Get language
-
+            detectedLanguage = ai_client.detect_language(documents=[text])[0]
+            print('\nDetected language: {}'.format(detectedLanguage.primary_language.name))
 
             # Get sentiment
 
